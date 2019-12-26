@@ -1,0 +1,8 @@
+{
+    "code-runner.runInTerminal": true,
+    "code-runner.saveAllFilesBeforeRun": true,
+    "code-runner.cwd": "./",
+    "code-runner.executorMap": {
+        "cpp": "clear\n cd $workspaceRoot \n  cd build \n cmake -G \"MinGW Makefiles\" .. \n  make ",
+    }, 
+}
