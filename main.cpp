@@ -2,13 +2,13 @@
  * @Description: 主函数
  * @Author: Yaodecheng
  * @Date: 2019-10-09 09:08:07
- * @LastEditTime : 2019-12-25 15:20:47
+ * @LastEditTime : 2020-02-05 22:00:43
  * @LastEditors  : Yaodecheng
  **/
 #include "ProtocolAnalysis.h"
 #include "agv_ins.h"
 #include "agv_msg.h"
-
+#include "adeall_udp.h"
 //正确收到数据后会调用此函数进行数据解包
 void Callback_outdata(ReturnFrameData in)
 {
@@ -74,9 +74,49 @@ public:
     };
 };
 
+void action1(std::vector<uint8_t> data,char* ip,int prot)
+{
+    //std::string hello=(std::string )data[0];
+    printf("test ok------------------------- !\n");
+    printf("%s\n",data.size());
+    printf("%s\n",ip);
+    printf("%d\n",prot);
+    printf("test ok#########################!\n");
+}
+class APP2
+{
+private:
+adeall_udp test;
+
+public:
+    APP2();
+    ~APP2();
+    void run()
+    {
+        test.init(9002);//初始化9000端口
+        test.add_topic("APP2",action1);
+    }
+    void send()
+    {
+        std::string hello="hello!!!";
+        test.send_topic_data("APP2",9002,1);
+        printf("send ok !\n");
+    }
+};
+
+APP2::APP2(/* args */)
+{
+}
+
+APP2::~APP2()
+{
+}
+
+
+
 int main()
 {
-    APP app;
+    APP2 app;
     //开始运行
     app.run();
     while (1)

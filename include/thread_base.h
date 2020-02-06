@@ -3,8 +3,8 @@
  * @version: v1.0
  * @Author: Yaodecheng
  * @Date: 2019-10-19 10:32:13
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2019-10-26 21:40:05
+ * @LastEditors  : Yaodecheng
+ * @LastEditTime : 2020-02-05 18:48:25
  */
 #ifndef THREAD_BASE_H
 #define THREAD_BASE_H

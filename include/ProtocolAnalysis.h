@@ -4,10 +4,11 @@
  * @Author: Yaodecheng
  * @Date: 2019-10-19 10:18:47
  * @LastEditors  : Yaodecheng
- * @LastEditTime : 2019-12-25 15:13:33
+ * @LastEditTime : 2020-02-05 22:00:09
  */
+#ifndef PROTOCOLANALYSIS_H
+#define PROTOCOLANALYSIS_H
 #include "UdpMessage.h"
-
 struct FrameDataStruct
 {
     uint8_t source_id = 0;
@@ -46,3 +47,4 @@ public:
     int init(const int port);
     void sendData(const char *ip, int prot, FrameDataStruct sdata);
 };
+#endif
