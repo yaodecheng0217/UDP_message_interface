@@ -2,7 +2,7 @@
  * @Description: 主函数
  * @Author: Yaodecheng
  * @Date: 2019-10-09 09:08:07
- * @LastEditTime : 2020-02-05 22:00:43
+ * @LastEditTime : 2020-02-07 00:17:12
  * @LastEditors  : Yaodecheng
  **/
 #include "ProtocolAnalysis.h"
@@ -73,15 +73,19 @@ public:
         sendData("127.0.0.1", 9001, Xdata);
     };
 };
+struct TEST1
+{
+    int a;
+    uint8_t b;
+};
 
 void action1(std::vector<uint8_t> data,char* ip,int prot)
 {
-    //std::string hello=(std::string )data[0];
-    printf("test ok------------------------- !\n");
-    printf("%s\n",data.size());
-    printf("%s\n",ip);
-    printf("%d\n",prot);
-    printf("test ok#########################!\n");
+    TEST1 *x1=(TEST1 *)&data[0];
+    printf("a=%d\n",x1->a);
+    printf("b=%d\n",x1->b);
+    printf("ip=%s\n",ip);
+    printf("port=%d\n",prot);
 }
 class APP2
 {
@@ -98,13 +102,15 @@ public:
     }
     void send()
     {
-        std::string hello="hello!!!";
-        test.send_topic_data("APP2",9002,1);
-        printf("send ok !\n");
+        TEST1 a;
+        a.a=123;
+        a.b=56;
+        test.send_topic_data("APP2",a,"127.0.0.1",9002);
+        //test.send_topic_data("APP2",1,"192.168.3.31",9002);
     }
 };
 
-APP2::APP2(/* args */)
+APP2::APP2()
 {
 }
 

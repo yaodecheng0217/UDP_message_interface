@@ -21,42 +21,41 @@ struct Topicdata
     std::string topic;
     std::vector<uint8_t> data;
 };
-
+struct TEST
+{
+    std::string topic;
+    int a;
+};
 class adeall_udp : protected ProtocolAnalysis
 {
 private:
-    /* data */
-
 public:
     adeall_udp();
     ~adeall_udp();
-    /*初始化监听端口*/
+    //初始化监听端口
     int init(int prot);
-    /*添加一个topic，并且绑定该主题到action*/
+    //添加一个topic，并且绑定该主题到action
     int add_topic(std::string, action_Callback);
-    /*向某个topic发送数据*/
+    //向某个topic发送数据
     template <typename T>
-    int send_topic_data(std::string topic, int prot, T data)
+    int send_topic_data(const std::string topic, T data, const char *ip, int prot)
     {
         //确定数据结构和填充发送数据
         FrameDataStruct Xdata;
         //填写采用的指令集
         Xdata.ins = 3;
-        Topicdata x;
-        x.topic = topic;
-        x.data.resize(sizeof(data));
-        memcpy(&x.data[0], &data, sizeof(data));
-        for (size_t i = 0; i < x.data.size(); i++)
-        {
-             printf("%d_", x.data[i]);
-            /* code */
-        }
-         printf("\n");
-        
-        Add_T_2_sendData(x, &Xdata);
-        //发送,测试广播发送
-        sendData("127.0.0.1", prot, Xdata);
-        sendData("192.168.3.31", prot, Xdata);
+        Topicdata tipdata;
+        tipdata.topic = topic;
+
+        tipdata.data.resize(sizeof(data));
+        memcpy(&tipdata.data[0], &data, sizeof(data));
+        Xdata._databuff.resize(sizeof(tipdata)+sizeof(data));
+        memcpy(&Xdata._databuff[0], &tipdata, sizeof(tipdata));
+        memcpy(&Xdata._databuff[0+sizeof(tipdata)], &data, sizeof(data));
+        Topicdata * temp=(Topicdata *)&Xdata._databuff[0];
+        sendData(ip, prot, Xdata);
+        //测试广播发送
+        //sendData("192.168.3.31", prot, Xdata);
         return 1;
     }
 };
