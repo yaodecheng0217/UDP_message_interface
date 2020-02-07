@@ -2,7 +2,7 @@
  * @Description: 主函数
  * @Author: Yaodecheng
  * @Date: 2019-10-09 09:08:07
- * @LastEditTime : 2020-02-07 00:17:12
+ * @LastEditTime : 2020-02-07 13:45:42
  * @LastEditors  : Yaodecheng
  **/
 #include "ProtocolAnalysis.h"
@@ -73,40 +73,86 @@ public:
         sendData("127.0.0.1", 9001, Xdata);
     };
 };
-struct TEST1
-{
-    int a;
-    uint8_t b;
-};
 
-void action1(std::vector<uint8_t> data,char* ip,int prot)
-{
-    TEST1 *x1=(TEST1 *)&data[0];
-    printf("a=%d\n",x1->a);
-    printf("b=%d\n",x1->b);
-    printf("ip=%s\n",ip);
-    printf("port=%d\n",prot);
-}
 class APP2
 {
 private:
-adeall_udp test;
-
+    //定义一个想要的结构体
+    struct TEST1
+    {
+        int a;
+        uint8_t b;
+        int c;
+    };
+    adeall_udp Adeall_msg;
+    void static action1(std::vector<uint8_t> data, char *Client_ip, int Client_prot, void *ctx)
+    {
+        //重构上下文信息
+        adeall_udp *msg = (adeall_udp *)ctx;
+        //判断数据结构体是否正确
+        if(sizeof(TEST1)!=data.size())
+        {
+            //数据类型不匹配
+            //返回错误信息
+            msg->send_topic_data("ERROR", -1, Client_ip, Client_prot);
+            return;
+        }
+        //重构数据结构体
+        TEST1 *x1 = (TEST1 *)&data[0];
+        printf("a=%d\n", x1->a);
+        printf("b=%d\n", x1->b);
+        printf("c=%d\n", x1->c);
+        printf("ip=%s\n", Client_ip);
+        printf("port=%d\n", Client_prot);
+        Sleep(10);
+        //反馈相应的数据给请求方
+        //msg->send_topic_data("OK", 1, "127.0.0.1", 9002);
+    }
+    void static action_ok(std::vector<uint8_t> data, char *Client_ip, int Client_prot, void *ctx)
+    {
+        //重构上下文信息
+        adeall_udp *msg = (adeall_udp *)ctx;
+        //判断数据结构体是否正确
+        if(sizeof(int)!=data.size())
+        {
+            return;
+        }
+        printf("OK=%d\n",*(int*)&data[0]);
+    }
+    void static action_error(std::vector<uint8_t> data, char *Client_ip, int Client_prot, void *ctx)
+    {
+        //重构上下文信息
+        adeall_udp *msg = (adeall_udp *)ctx;
+        //判断数据结构体是否正确
+        if(sizeof(int)!=data.size())
+        {
+            return;
+        }
+        printf("ERROR=%d\n",*(int*)&data[0]);
+    }
 public:
     APP2();
     ~APP2();
     void run()
     {
-        test.init(9002);//初始化9000端口
-        test.add_topic("APP2",action1);
+        //初始化9002端口
+        Adeall_msg.init(9003); 
+        //添加一个APP2的topic以及绑定到action1
+        Adeall_msg.add_topic("APP2", action1, &Adeall_msg);
+        //添加一个ok响应的topic以及绑定到action1
+        Adeall_msg.add_topic("OK", action_ok, &Adeall_msg);
+        //添加一个error响应的topic以及绑定到action1
+        Adeall_msg.add_topic("ERROR", action_error, &Adeall_msg);
     }
     void send()
     {
+        //测试发送
         TEST1 a;
-        a.a=123;
-        a.b=56;
-        test.send_topic_data("APP2",a,"127.0.0.1",9002);
-        //test.send_topic_data("APP2",1,"192.168.3.31",9002);
+        a.a = 123;
+        a.b = 56;
+        a.c = 66;
+        //发送信息
+        //Adeall_msg.send_topic_data("APP2", a, "127.0.0.1", 9003);
     }
 };
 
@@ -118,13 +164,12 @@ APP2::~APP2()
 {
 }
 
-
-
 int main()
 {
     APP2 app;
     //开始运行
     app.run();
+    
     while (1)
     {
         app.send();
