@@ -9,6 +9,14 @@
 #include "agv_ins.h"
 #include "agv_msg.h"
 #include "adeall_udp.h"
+
+struct TESTdata
+{
+    std::string A;
+};
+
+
+
 //正确收到数据后会调用此函数进行数据解包
 void Callback_outdata(ReturnFrameData in)
 {
@@ -24,13 +32,24 @@ void Callback_outdata(ReturnFrameData in)
         {
             //todo
             //定义对应结构体指针
-            PutEmptyStockNavData *p = (PutEmptyStockNavData *)&in._databuff[0];
+            /*PutEmptyStockNavData *p = (PutEmptyStockNavData *)&in._databuff[0];
             printf("PutEmptyStockNavData:\n");
             printf("from %d,%s\n", in.prot, in.ip);
 
             printf("id=%d\n", p->id);
-            printf("x=%f\ny=%f\nz=%f\nyaw=%f\n\n", p->x, p->y, p->z, p->yaw);
-            //printf("ret=%d\nposition_deviation=%f\n", p->ret, p->position_deviation);
+            printf("x=%f\ny=%f\nz=%f\nyaw=%f\n\n", p->x, p->y, p->z, p->yaw);*/
+            TESTdata *x=(TESTdata *)&in._databuff[0];
+            printf("recv:%s\n",x->A.c_str());
+            for (size_t i = 0; i < in._databuff.size(); i++)
+            {
+               printf("%d_",in._databuff[i]);
+            }
+            printf("\n");
+            for (size_t i = 0; i < in._databuff.size(); i++)
+            {
+               printf("%c_",in._databuff[i]);
+            }
+            printf("\n");
             break;
         }
         default:
@@ -62,14 +81,27 @@ public:
         //填写数据类型
         Xdata.cmd_type = ISSA_RES_PUT_EMPTY_STOCK_NAV;
         //添加数据区到帧数据
-        PutEmptyStockNavData x;
+        /*PutEmptyStockNavData x;
         x.id = 125;
         x.x = 1;
         x.y = 2;
         x.z = 3;
-        x.yaw = 1.25;
+        x.yaw = 1.25;*/
+        TESTdata x;
+        x.A="123456789";
         Add_T_2_sendData(x, &Xdata);
+         printf("send:%s\n",x.A.c_str());
         //发送
+        for (size_t i = 0; i < Xdata._databuff.size(); i++)
+            {
+               printf("%d^",Xdata._databuff[i]);
+            }
+            printf("\n");
+             for (size_t i = 0; i < Xdata._databuff.size(); i++)
+            {
+               printf("%c^",Xdata._databuff[i]);
+            }
+            printf("\n");
         sendData("127.0.0.1", 9001, Xdata);
     };
 };
@@ -166,7 +198,7 @@ APP2::~APP2()
 
 int main()
 {
-    APP2 app;
+    APP app;
     //开始运行
     app.run();
     

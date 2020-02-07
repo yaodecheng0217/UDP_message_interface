@@ -1,7 +1,7 @@
 <!--
  * @Author: Yaodecheng
  * @Date: 2019-10-26 13:39:25
- * @LastEditTime : 2020-02-05 10:41:36
+ * @LastEditTime : 2019-12-26 13:48:39
  * @LastEditors  : Yaodecheng
  * @Description: ProtocolAnalysis
  * @FilePath: D:\Project\model\ProtocolAnalysis\README.md
@@ -87,3 +87,6 @@ void Callback_outdata(ReturnFrameData in)
 ### 发送方：对要数据累加，得到一个数据和，对和求反，即得到我们的校验值。然后把要发的数据和这个校验值一起发送给接收方。
 ### 接收方：对接收的数据（包括校验和）进行累加，然后加1，如果得到0，那么说明数据没有出现传输错误。
     （注意，此处发送方和接收方用于保存累加结果的类型一定要一致uint8_t，否则加1就无法实现溢出从而无法得到0，校验就会无效）
+
+# 注意
+* 使用该接口时，传入的数据结构不应使用含有不定长度数据结构如vector，指针等;这样会使接受收方数据混乱和丢失。
