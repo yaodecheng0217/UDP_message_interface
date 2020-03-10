@@ -2,16 +2,34 @@
  * @Description: 主函数
  * @Author: Yaodecheng
  * @Date: 2019-10-09 09:08:07
- * @LastEditTime : 2019-12-25 15:20:47
- * @LastEditors  : Yaodecheng
+ * @LastEditTime: 2020-03-10 17:49:14
+ * @LastEditors: Yaodecheng
  **/
 #include "ProtocolAnalysis.h"
 #include "agv_ins.h"
 #include "agv_msg.h"
-
+#include "CJson/CJsonObject.hpp"
 //正确收到数据后会调用此函数进行数据解包
 void Callback_outdata(ReturnFrameData in)
 {
+
+     neb::CJsonObject oJson((char*)&in._databuff[0]);
+
+    printf("RECV:[");
+    //printf("%s", oJson.ToFormattedString().c_str());
+    std::cout << oJson["test_float"].GetArraySize() << std::endl;
+     float fTestValue = 0.0;
+     for (int i = 0; i < oJson["test_float"].GetArraySize(); ++i)
+     {
+         oJson["test_float"].Get(i, fTestValue);
+         std::cout << fTestValue << std::endl;
+     }
+   /* for (size_t i = 0; i < in._databuff.size(); i++)
+    {
+        printf("%c ", in._databuff[i]);
+    }*/
+    printf("]\n");
+    return;
     //根据指令集分类
     switch (in.ins)
     {
@@ -68,7 +86,32 @@ public:
         x.y = 2;
         x.z = 3;
         x.yaw = 1.25;
-        Add_T_2_sendData(x, &Xdata);
+        std::string aa="Test send and restore strings. <<---- Adeall AGV projce ---->> ";
+        neb::CJsonObject oJson("{\"refresh_interval\":60,"
+                        "\"test_float\":[18.01, 10.0, 5.06],"
+                        "\"timeout\":12.5,"
+                        "\"dynamic_loading\":["
+                            "{"
+                                "\"so_path\":\"plugins/User.so\", \"load\":false, \"version\":1,"
+                                "\"cmd\":["
+                                     "{\"cmd\":2001, \"class\":\"neb::CmdUserLogin\"},"
+                                     "{\"cmd\":2003, \"class\":\"neb::CmdUserLogout\"}"
+                                "],"
+                                "\"module\":["
+                                     "{\"path\":\"im/user/login\", \"class\":\"neb::ModuleLogin\"},"
+                                     "{\"path\":\"im/user/logout\", \"class\":\"neb::ModuleLogout\"}"
+                                "]"
+                             "},"
+                             "{"
+                             "\"so_path\":\"plugins/ChatMsg.so\", \"load\":false, \"version\":1,"
+                                 "\"cmd\":["
+                                      "{\"cmd\":2001, \"class\":\"neb::CmdChat\"}"
+                                 "],"
+                             "\"module\":[]"
+                             "}"
+                        "]"
+                    "}");
+        Add_T_2_sendData(oJson.ToString(), &Xdata);
         //发送
         sendData("127.0.0.1", 9001, Xdata);
     };

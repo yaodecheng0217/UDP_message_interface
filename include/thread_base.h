@@ -3,8 +3,8 @@
  * @version: v1.0
  * @Author: Yaodecheng
  * @Date: 2019-10-19 10:32:13
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2019-10-26 21:40:05
+ * @LastEditors: Yaodecheng
+ * @LastEditTime: 2020-03-10 16:43:35
  */
 #ifndef THREAD_BASE_H
 #define THREAD_BASE_H
@@ -16,6 +16,7 @@
 #endif
 #include <stdio.h>
 #include <sys/types.h>
+#include"mutexlock.hpp"
 /*
    thread_base thread(RunFunction);
 */
@@ -31,7 +32,7 @@ private:
 #endif
 	RunFun _fun;
 	void *_context;
-
+    MutexLock L;
 public:
 	thread_base(RunFun, void *);
 	~thread_base();

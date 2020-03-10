@@ -59,6 +59,7 @@ typedef struct CarStateLasserData
 	float side;	//侧移传感器
 	float forward; //前移传感器
 	float tary;	//托盘传感器
+	
 };
 //车辆控制状态数据
 typedef struct CarOutControlData

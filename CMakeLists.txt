@@ -15,10 +15,11 @@ SET(CMAKE_CXX_FLAGS "-m64")
 
 aux_source_directory(./src SRC_FILES)
 aux_source_directory(./src/basic SRC_BASIC_FILES)
+aux_source_directory(./CJson SRC_Cjson_FILES)
 #添加头文件目录
 include_directories(
      include
-     include/basic
+     CJson
     )
 #添加连接库路径
 list( APPEND PROJECK_LINKS_LIBS
@@ -40,6 +41,7 @@ add_executable( ${PROJECT_NAME}
     "main.cpp"
     ${SRC_FILES}
     ${SRC_BASIC_FILES}
+    ${SRC_Cjson_FILES}
     )
 
 #最后一步,为可执行文件链接所有库

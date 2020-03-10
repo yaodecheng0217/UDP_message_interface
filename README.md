@@ -1,8 +1,8 @@
 <!--
  * @Author: Yaodecheng
  * @Date: 2019-10-26 13:39:25
- * @LastEditTime : 2020-02-08 18:08:23
- * @LastEditors  : Yaodecheng
+ * @LastEditTime: 2020-03-10 17:54:10
+ * @LastEditors: Yaodecheng
  * @Description: ProtocolAnalysis
  * @FilePath: D:\Project\model\ProtocolAnalysis\README.md
  -->
@@ -18,7 +18,10 @@ Adeall 通用udp通讯协议接口
 * 2019-12-25
    1. 增加指令集字段
    2. 增加发送方ip和端口号返回
-
+* 2020-3-10
+   1. 修复线程类bug
+   2. 增加发送字符串类功能，用于支持json数据发送
+   3. 添加cjson库
 ---
 # 《通讯框架使用说明书》
 ---

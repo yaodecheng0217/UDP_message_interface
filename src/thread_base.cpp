@@ -16,7 +16,10 @@ void *thread_base::threadfun(void *ptr)
 #endif
 {
     thread_base *p = (thread_base *)ptr;
-    p->_fun(p->_context);
+    RunFun fun = p->_fun;
+    void* context = p->_context;
+    p->L.unlock();
+    fun(context);
     p->~thread_base();
 
     return 0;
